@@ -1,0 +1,100 @@
+erDiagram
+    users ||--o{ organizations : "belongs_to"
+    organizations ||--o{ customers : "manages"
+    organizations ||--o{ email_templates : "owns"
+    organizations ||--o{ scenarios : "owns"
+    scenarios ||--o{ scenario_steps : "contains"
+    organizations ||--o{ campaigns : "runs"
+    customers ||--o{ customer_tags : "has"
+    tags ||--o{ customer_tags : "used_in"
+    campaigns ||--o{ campaign_emails : "sends"
+    customers ||--o{ campaign_emails : "receives"
+    email_templates ||--o{ campaign_emails : "used_in"
+
+    users {
+        uuid id PK
+        string email
+        string hashed_password
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    organizations {
+        uuid id PK
+        string name
+        string subscription_status
+        json settings
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    customers {
+        uuid id PK
+        uuid organization_id FK
+        string email
+        string name
+        json attributes
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    tags {
+        uuid id PK
+        uuid organization_id FK
+        string name
+        timestamp created_at
+    }
+
+    customer_tags {
+        uuid customer_id FK
+        uuid tag_id FK
+    }
+
+    email_templates {
+        uuid id PK
+        uuid organization_id FK
+        string name
+        text content
+        json variables
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    scenarios {
+        uuid id PK
+        uuid organization_id FK
+        string name
+        json conditions
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    scenario_steps {
+        uuid id PK
+        uuid scenario_id FK
+        integer step_order
+        string action_type
+        json action_config
+        timestamp created_at
+    }
+
+    campaigns {
+        uuid id PK
+        uuid organization_id FK
+        string name
+        string status
+        timestamp scheduled_at
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    campaign_emails {
+        uuid id PK
+        uuid campaign_id FK
+        uuid customer_id FK
+        uuid template_id FK
+        string status
+        timestamp sent_at
+        timestamp opened_at
+        timestamp created_at
+    }
